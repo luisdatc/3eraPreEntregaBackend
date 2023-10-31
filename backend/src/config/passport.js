@@ -2,6 +2,7 @@ import local from "passport-local"; // se importa la estrategia
 import GithubStrategy from "passport-github2";
 import passport from "passport";
 import jwt from "passport-jwt";
+import "dotenv/config";
 
 import { createHash, validatePassword } from "../utils/bcrypt.js";
 import { userModel } from "../models/users.models.js";
@@ -13,7 +14,7 @@ const ExtractJWT = jwt.ExtractJwt; // para extraer de las cookies el token
 
 const initializePassport = () => {
   const cookieExtractor = (req) => {
-    const token = req.cookies.jwtCookie ? req.cookies.jwtCookie : {};
+    const token = req.headers.authorization ? req.headers.authorization : {};
 
     console.log("cookieExtractor", token);
 

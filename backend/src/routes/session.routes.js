@@ -5,7 +5,6 @@ import {
   getGithub,
   getGihubCallback,
   getLogout,
-  getTestJWT,
   getCurrent,
 } from "../controllers/session.controllers.js";
 import passport from "passport";
@@ -36,13 +35,6 @@ sessionRouter.get(
 
 sessionRouter.get("/logout", getLogout);
 
-//verifica que el token enviado sea valido (misma contraseña)
-
-sessionRouter.get(
-  "/testJWT",
-  passport.authenticate("jwt", { session: false }),
-  getTestJWT
-);
 sessionRouter.get(
   "/current",
   passportError("jwt"),

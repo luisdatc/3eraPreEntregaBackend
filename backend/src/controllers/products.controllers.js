@@ -53,7 +53,7 @@ export const postProduct = async (req, res) => {
     });
 
     if (prod) {
-      return res.status(201).send(product);
+      return res.status(201).send(prod);
     }
 
     res.status(400).send({ error: `Error en crear producto` });
@@ -83,7 +83,7 @@ export const putProduct = async (req, res) => {
     });
 
     if (prod) {
-      return res.status(200).send(product);
+      return res.status(200).send(prod);
     }
 
     res.status(404).send({ error: "Producto no encontrado" });
@@ -99,7 +99,7 @@ export const deleteroduct = async (req, res) => {
       const prod = await productModel.findByIdAndDelete(id);
   
       if (prod) {
-        return res.status(200).send(product);
+        return res.status(200).send(prod);
       }
   
       res.status(404).send({ error: "Productono encontrado" });

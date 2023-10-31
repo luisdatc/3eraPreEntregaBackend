@@ -12,16 +12,40 @@ import initializePassport from "./config/passport.js";
 import cookieParser from "cookie-parser";
 
 import router from "./routes/index.routes.js";
-
+import nodemailer from "nodemailer";
 
 import { productModel } from "./models/products.models.js";
-
 
 const app = express();
 const PORT = 8080;
 
 const serverExpress = app.listen(PORT, () => {
   console.log(`Server on port ${PORT}`);
+});
+
+let transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "correomcoc@gmail.com",
+    pass: process.env.PASSWORD_EMAIL,
+    authMethod: "LOGIN",
+  }/* ,
+  tls: {
+    rejectUnauthorized: false, // Desactiva la verificación del certificado
+  }, */
+});
+
+app.get("/mail", async (req, res) => {
+  const resultadoEmail = await transporter.sendMail({
+    from: "TEST MAIL correomcoc@gmail.com",
+    to: "correomcoc@gmail.com",
+    subject: "Hola Prueba",
+    html: `<p>Hola esto es una prueba</p>`,
+  });
+  console.log(resultadoEmail);
+  res.send("Email enviado");
 });
 
 //Conexion a la Base de Datos
@@ -74,7 +98,7 @@ app.use((req, res, next) => {
 });
 
 //Routes
-app.use("/", router)
+app.use("/", router);
 
 // Server Socket.io
 const io = new Server(serverExpress);
@@ -145,3 +169,5 @@ app.get("/register", (req, res) => {
     title: "Registro",
   });
 });
+
+/* PARA VER LO REFERENTE AL FRONT VER EL AFTER DEL FRONTEND Y LA CLASE 15 SEGUNDA PARTE */
