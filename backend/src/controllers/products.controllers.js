@@ -14,7 +14,7 @@ export const getProducts = async (req, res) => {
     );
 
     if (prods) {
-      return res.status(200).send(productos);
+      return res.status(200).send(prods);
     }
 
     res.status(404).send({ error: "Productos no encontrados" });
@@ -30,7 +30,7 @@ export const getProduct = async (req, res) => {
     const prod = await productModel.findById(id);
 
     if (prod) {
-      return res.status(200).send(product);
+      return res.status(200).send(prod);
     }
 
     res.status(404).send({ error: "Producto no encontrado" });

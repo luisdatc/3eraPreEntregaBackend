@@ -5,7 +5,6 @@ import {
   getGithub,
   getGihubCallback,
   getLogout,
-  getCurrent,
 } from "../controllers/session.controllers.js";
 import passport from "passport";
 import { passportError, authorization } from "../utils/messageError.js";
@@ -38,12 +37,10 @@ sessionRouter.get("/logout", getLogout);
 sessionRouter.get(
   "/current",
   passportError("jwt"),
-  authorization(
-    "user"
-  ) /* aca puedo cambiar el user por admin si quiero que la ruta sea solo para administradores */,
-  getCurrent
+  authorization("user"),
+  (req, res) => {
+    res.send(req.user);
+  }
 );
-
+/* aca puedo cambiar el user por admin si quiero que la ruta sea solo para administradores */
 export default sessionRouter;
-
-//quede en la clase 12 03:52:23

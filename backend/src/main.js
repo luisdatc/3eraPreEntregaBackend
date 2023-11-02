@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cors from "cors";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
@@ -16,12 +17,20 @@ import nodemailer from "nodemailer";
 
 import { productModel } from "./models/products.models.js";
 
+const whiteList = ["http://127.0.0.1:5173"];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whiteList.indexOf(origin) != -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Acceso Denegado"));
+    }
+  },
+};
+
 const app = express();
 const PORT = 8080;
-
-const serverExpress = app.listen(PORT, () => {
-  console.log(`Server on port ${PORT}`);
-});
 
 let transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -31,10 +40,10 @@ let transporter = nodemailer.createTransport({
     user: "correomcoc@gmail.com",
     pass: process.env.PASSWORD_EMAIL,
     authMethod: "LOGIN",
-  }/* ,
+  } /* ,
   tls: {
     rejectUnauthorized: false, // Desactiva la verificación del certificado
-  }, */
+  }, */,
 });
 
 app.get("/mail", async (req, res) => {
@@ -56,6 +65,7 @@ mongoose
 
 //MIDDLEWARE
 app.use(express.json());
+app.use(cors(corsOptions));
 app.use(cookieParser(process.env.SIGNED_COOKIE)); //la cookie esta firmada
 
 app.use(
@@ -88,8 +98,6 @@ const auth = (req, res, next) => {
   }
 };
 
-app.engine("handlebars", engine()); //defino el motor de plantillas a usar y la config
-app.set("view engine", "handlebars"); //setting de mi app de handlebars
 app.set("views", path.resolve(__dirname, "./views")); //resuelve rutas absolutas a travez de rutas relativas
 app.use("/static", express.static(path.join(__dirname, "/public")));
 app.use((req, res, next) => {
@@ -100,74 +108,8 @@ app.use((req, res, next) => {
 //Routes
 app.use("/", router);
 
-// Server Socket.io
-const io = new Server(serverExpress);
-
-io.on("connection", (socket) => {
-  console.log("Servidor Socket.io Conectado");
-
-  socket.on("nuevoProductoRealTime", async (product) => {
-    try {
-      const newProduct = await productModel.create(product);
-      io.emit("productoAgregadoRealTime", newProduct);
-    } catch (error) {
-      console.error("Error al agregar el producto en tiempo real:", error);
-    }
-  });
-
-  socket.on("solicitarProductos", async () => {
-    try {
-      const products = await productModel.find();
-      socket.emit("productosMostrados", products);
-    } catch (error) {
-      console.error("Error al obtener la lista de productos:", error);
-    }
-  });
-});
-
-// RUTA POARA LA VISTA HOME.HANDLEBARS
-app.get("/static", auth, async (req, res) => {
-  try {
-    const products = await productModel.find();
-    res.render("home", {
-      css: "style.css",
-      title: "Home",
-      js: "script.js",
-      products: products.map((product) => ({
-        title: product.title,
-        description: product.description,
-        price: product.price,
-        stock: product.stock,
-        code: product.code,
-      })),
-    });
-  } catch (error) {
-    console.error("Error al obtener los productos:", error);
-  }
-});
-
-app.get("/static/realtimeproducts", auth, (req, res) => {
-  res.render("realTimeProducts", {
-    css: "form.css",
-    js: "realTimeProducts.js",
-    title: "Agregar Productos",
-  });
-});
-
-app.get("/login", (req, res) => {
-  res.render("login", {
-    css: "form.css",
-    js: "script.js",
-    title: "Login",
-  });
-});
-
-app.get("/register", (req, res) => {
-  res.render("registro", {
-    css: "form.css",
-    js: "script.js",
-    title: "Registro",
-  });
-});
-
 /* PARA VER LO REFERENTE AL FRONT VER EL AFTER DEL FRONTEND Y LA CLASE 15 SEGUNDA PARTE */
+
+const serverExpress = app.listen(PORT, () => {
+  console.log(`Server on port ${PORT}`);
+});

@@ -5,7 +5,7 @@ export const getUsers = async (req, res) => {
     const user = await userModel.find();
 
     if (user) {
-      return res.status(200).send(usuario);
+      return res.status(200).send(user);
     }
     res.status(400).send({ error: "Usuario no encontrado" });
   } catch (error) {
@@ -20,7 +20,7 @@ export const getUserbyId = async (req, res) => {
     const userId = await userModel.findById(id);
 
     if (userId) {
-      return res.status(200).send(usuarioId);
+      return res.status(200).send(userId);
     }
     res.status(404).send({ error: "Usuario no encontrado" });
   } catch (error) {
@@ -28,32 +28,6 @@ export const getUserbyId = async (req, res) => {
   }
 };
 
-/* ESTA ME PARECE QUE NO VA YA QUE SE MANEJA EN EL PASSPORT */
-/* export const postUser = async (req, res) => {
-  const { first_name, last_name, age, email, password } = req.body;
-
-  try {
-    const newUser = await userModel.create({
-      first_name,
-      last_name,
-      age,
-      email,
-      password,
-    });
-
-    if (newUser) {
-      return res.status(200).send(usuarioNuevo);
-    }
-    res.status(400).send({ error: `Error en crear usuario nuevo` });
-  } catch (error) {
-    if (error.email == 11000) {
-      return res
-        .status(404)
-        .send({ error: "El email ya se encuentra asignado a un usuario" });
-    }
-    res.status(500).send({ error: `Error en consultar usuario ${error}` });
-  }
-}; */
 
 export const putUser = async (req, res) => {
   const { id } = req.params;
@@ -69,7 +43,7 @@ export const putUser = async (req, res) => {
     });
 
     if (actUser) {
-      return res.status(200).send(usuarioActualizado);
+      return res.status(200).send(actUser);
     }
     res.status(404).send({ error: "Usuario no encontrado" });
   } catch (error) {

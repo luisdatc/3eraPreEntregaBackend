@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import "./LoginRegister.scss";
+import { useNavigate } from "react-router-dom";
 
 const LoginRegister = () => {
   const [isLoginFormVisible, setLoginFormVisible] = useState(true);
@@ -8,58 +9,176 @@ const LoginRegister = () => {
   const toggleForm = () => {
     setLoginFormVisible(!isLoginFormVisible);
   };
+  const navigate = useNavigate();
+
+  const loginFormRef = useRef(null);
+  const registerFormRef = useRef(null);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(loginFormRef.current);
+
+    // Crear un objeto para almacenar solo los campos del formulario de inicio de sesión
+    const data = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    };
+
+    console.log(data);
+
+    const response = await fetch("http://localhost:8080/api/sessions/login", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (response.status === 200) {
+      const datos = await response.json();
+      document.cookie = `jwtCookie=${datos.token}; expires=${new Date(
+        Date.now() + 1 * 24 * 60 * 60 * 1000
+      ).toUTCString()};path=/;`;
+      navigate("/products");
+    } else {
+      console.log(response);
+    }
+  };
+
+  const handleSubmit2 = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(registerFormRef.current);
+
+    // Crear un objeto para almacenar solo los campos del formulario de registro
+    const data = {
+      first_name: formData.get("first_name"),
+      last_name: formData.get("last_name"),
+      email: formData.get("email"),
+      age: formData.get("age"),
+      password: formData.get("password"),
+    };
+
+    console.log(data);
+
+    const response = await fetch(
+      "http://localhost:8080/api/sessions/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+    console.log(response);
+  };
 
   return (
     <section className="user">
       <div className="user_options-container">
         <div className="user_options-text">
-          <div className={`user_options-unregistered ${isLoginFormVisible ? "bounceLeft" : ""}`}>
-            <h2 className="user_unregistered-title">No tienes una cuenta? Registrate!</h2>
+          <div
+            className={`user_options-unregistered ${
+              isLoginFormVisible ? "bounceLeft" : ""
+            }`}
+          >
+            <h2 className="user_unregistered-title">
+              No tienes una cuenta? Registrate!
+            </h2>
             <p className="user_unregistered-text">
-              Registrate para tener novedades de nuestro catalogo y poder realizar compras.
+              Registrate para tener novedades de nuestro catalogo y poder
+              realizar compras.
             </p>
-            <button className="user_unregistered-signup" id="signup-button" onClick={toggleForm}>
+            <button
+              className="user_unregistered-signup"
+              id="signup-button"
+              onClick={toggleForm}
+            >
               Registrate
             </button>
           </div>
 
-          <div className={`user_options-registered ${isLoginFormVisible ? "" : "bounceRight"}`}>
+          <div
+            className={`user_options-registered ${
+              isLoginFormVisible ? "" : "bounceRight"
+            }`}
+          >
             <h2 className="user_registered-title">Ya tienes una cuenta?</h2>
             <p className="user_registered-text">
-              Inicia sesion y date una vuelta por nuestro catalogo de comics. 
+              Inicia sesion y date una vuelta por nuestro catalogo de comics.
             </p>
-            <button className="user_registered-login" id="login-button" onClick={toggleForm}>
+            <button
+              className="user_registered-login"
+              id="login-button"
+              onClick={toggleForm}
+            >
               Inicia Sesion
             </button>
           </div>
         </div>
 
-        <div className={`user_options-forms ${isLoginFormVisible ? "bounceRight" : "bounceLeft" }`} id="user_options-forms">
+        <div
+          className={`user_options-forms ${
+            isLoginFormVisible ? "bounceRight" : "bounceLeft"
+          }`}
+          id="user_options-forms"
+        >
           <div className="user_forms-login">
             <h2 className="forms_title">Inicia Sesion</h2>
-            <form className="forms_form">
+            <form
+              onSubmit={handleSubmit}
+              ref={loginFormRef}
+              className="forms_form"
+            >
               <fieldset className="forms_fieldset">
                 <div className="forms_field">
-                  <input type="email" placeholder="Email" className="forms_field-input" required autoFocus />
+                  <input
+                    type="email"
+                    name="email"
+                    placeholder="Email"
+                    className="forms_field-input"
+                    required
+                    autoFocus
+                  />
                 </div>
                 <div className="forms_field">
-                  <input type="password" placeholder="Password" className="forms_field-input" required/>
+                  <input
+                    type="password"
+                    name="password"
+                    placeholder="Password"
+                    className="forms_field-input"
+                    required
+                  />
                 </div>
               </fieldset>
               <div className="forms_buttons">
-{/*                 <button type="button" className="forms_buttons-forgot">
+                {/*                 <button type="button" className="forms_buttons-forgot">
                   Forgot password?
                 </button> */}
-                <input type="submit" value="Log In" className="forms_buttons-action"/>
+                <input
+                  type="submit"
+                  value="Log In"
+                  className="forms_buttons-action"
+                />
               </div>
             </form>
           </div>
           <div className="user_forms-signup">
             <h2 className="forms_title">Registro</h2>
-            <form className="forms_form">
+            <form
+              className="forms_form"
+              onSubmit={handleSubmit2}
+              ref={registerFormRef}
+            >
               <fieldset className="forms_fieldset">
                 <div className="forms_field">
-                  <input type="text" placeholder="Nombre" className="forms_field-input" required name="first_name"/>
+                  <input
+                    type="text"
+                    placeholder="Nombre"
+                    className="forms_field-input"
+                    required
+                    name="first_name"
+                  />
                 </div>
                 <div className="forms_field">
                   <input
@@ -85,7 +204,7 @@ const LoginRegister = () => {
                     placeholder="Edad"
                     className="forms_field-input"
                     required
-                    name="edad"
+                    name="age"
                   />
                 </div>
                 <div className="forms_field">

@@ -328,7 +328,10 @@ input::placeholder {
     top: 40px;
   }
   .user_options-forms.bounceLeft {
-  overflow-y: scroll;
+    min-height: 460px;
+  }
+  .user_options-forms.user_options-forms.bounceRight {
+    min-height: 400px;
   }
   .user_options-registered,
   .user_options-unregistered {
