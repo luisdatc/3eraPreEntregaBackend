@@ -5,7 +5,7 @@ export const getProducts = async (req, res) => {
 
   const pag = page ? page : 1;
   const lim = limit ? limit : 10;
-  const ord = srot == "asc" ? 1 : -1;
+  const ord = sort == "asc" ? 1 : -1;
 
   try {
     const prods = await productModel.paginate(
@@ -92,7 +92,7 @@ export const putProduct = async (req, res) => {
   }
 };
 
-export const deleteroduct = async (req, res) => {
+export const deleteProduct = async (req, res) => {
     const { id } = req.params;
   
     try {

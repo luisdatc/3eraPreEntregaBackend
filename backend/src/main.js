@@ -4,20 +4,15 @@ import cors from "cors";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import mongoose from "mongoose";
-import { engine } from "express-handlebars";
-import { Server } from "socket.io";
-import { __dirname } from "./path.js";
 import path from "path";
 import passport from "passport";
 import initializePassport from "./config/passport.js";
 import cookieParser from "cookie-parser";
-
 import router from "./routes/index.routes.js";
 import nodemailer from "nodemailer";
+import { __dirname } from "./path.js";
 
-import { productModel } from "./models/products.models.js";
-
-const whiteList = ["http://127.0.0.1:5173"];
+const whiteList = ["http://127.0.0.1:5173", "http://localhost:5173"];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -27,12 +22,13 @@ const corsOptions = {
       callback(new Error("Acceso Denegado"));
     }
   },
+  credentials: true,
 };
 
 const app = express();
 const PORT = 8080;
 
-let transporter = nodemailer.createTransport({
+/*let transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 465,
   secure: true,
@@ -40,13 +36,13 @@ let transporter = nodemailer.createTransport({
     user: "correomcoc@gmail.com",
     pass: process.env.PASSWORD_EMAIL,
     authMethod: "LOGIN",
-  } /* ,
+  }  ,
   tls: {
     rejectUnauthorized: false, // Desactiva la verificación del certificado
-  }, */,
-});
+  }, 
+});*/
 
-app.get("/mail", async (req, res) => {
+/* app.get("/mail", async (req, res) => {
   const resultadoEmail = await transporter.sendMail({
     from: "TEST MAIL correomcoc@gmail.com",
     to: "correomcoc@gmail.com",
@@ -55,7 +51,7 @@ app.get("/mail", async (req, res) => {
   });
   console.log(resultadoEmail);
   res.send("Email enviado");
-});
+}); */
 
 //Conexion a la Base de Datos
 mongoose
@@ -65,7 +61,9 @@ mongoose
 
 //MIDDLEWARE
 app.use(express.json());
+
 app.use(cors(corsOptions));
+
 app.use(cookieParser(process.env.SIGNED_COOKIE)); //la cookie esta firmada
 
 app.use(

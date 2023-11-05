@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   getProducts,
   getProduct,
-  deleteroduct,
+  deleteProduct,
   putProduct,
   postProduct,
 } from "../controllers/products.controllers.js";
@@ -25,7 +25,7 @@ productosRouter.delete(
   "/:id",
   passportError("jwt"),
   authorization("admin"),
-  deleteroduct
+  deleteProduct
 );
 
 productosRouter.post(
