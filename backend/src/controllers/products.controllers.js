@@ -4,7 +4,7 @@ export const getProducts = async (req, res) => {
   const { limit, page, filter, sort } = req.query;
 
   const pag = page ? page : 1;
-  const lim = limit ? limit : 10;
+  const lim = limit ? limit : 100;
   const ord = sort == "asc" ? 1 : -1;
 
   try {

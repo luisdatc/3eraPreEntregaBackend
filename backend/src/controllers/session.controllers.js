@@ -52,13 +52,6 @@ export const getGihubCallback = async (req, res) => {
 };
 
 export const getLogout = async (req, res) => {
-  /* si manejo sesiones en base de datos */
-
-  if (req.session.login) {
-    req.session.destroy();
-  }
-
-  /* hasta aca */
   res.clearCookie("jwtCookie");
   res.status(200).send({ resultado: "Usuario deslogueado" });
 };

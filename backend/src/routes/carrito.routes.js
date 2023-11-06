@@ -8,6 +8,7 @@ import {
   putCarritoByProducId,
   deleteProductById,
   putCarrito,
+  postCompra,
 } from "../controllers/carrito.controllers.js";
 
 const cartsRouter = Router();
@@ -27,5 +28,7 @@ cartsRouter.put("/:cid/products/:pid", putCarritoByProducId);
 cartsRouter.delete("/:cid/products/:pid", deleteProductById);
 
 cartsRouter.put("/:cid", putCarrito);
+
+cartsRouter.post("/:cid/purchase", postCompra)
 
 export default cartsRouter;

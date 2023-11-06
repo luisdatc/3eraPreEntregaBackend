@@ -11,7 +11,7 @@ export const postCompra = async (req, res) => {
       return res.status(404).json({ message: "Carrito no encontrado" });
     }
 
-    const productsNotProcessed = []; // Arreglo para almacenar los IDs de los productos no procesados
+    const productsNotProcessed = []; // aca se almacenan los productos que no se pudieron procesar
 
     for (const item of cart.items) {
       const product = item.product;
@@ -22,18 +22,18 @@ export const postCompra = async (req, res) => {
         product.stock -= requestedQuantity;
         await product.save();
       } else {
-        // El producto no tiene suficiente stock, agregarlo a la lista de no procesados
+        // si el producto no tiene suficiente stock se almacenan en los no procesados
         productsNotProcessed.push(product._id);
       }
     }
 
-    // Actualiza el carrito con los productos no procesados
+    // se actualiza el carrito con los productos no procesados
     cart.items = cart.items.filter(
       (cartItem) => !productsNotProcessed.includes(cartItem.product._id)
     );
     await cart.save();
 
-    // Crea un ticket con los datos de la compra
+    // se crea un ticket con los datos de la compra
     const ticket = new ticketModel({
       amount: cart.total, // Supongo que el carrito tiene un campo total
       purchaser: cart.userEmail, // O donde se almacena el correo del usuario

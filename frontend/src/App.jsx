@@ -1,22 +1,27 @@
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginRegister from "./components/LoginRegister/LoginRegister";
 import NewProduct from "./components/NewProduct/NewProduct";
 import NavBar from "./components/NavBar/NavBar";
+import Products from "./components/Products/Products";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Products from "./components/Products/Products";
+import { LogProvider } from "./components/LogContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <NavBar />
-      <Routes>
-        <Route path="/usuario" element={<LoginRegister />} />
-        <Route path="/new-product" element={<NewProduct />} />
-        <Route path="/products" element={<Products />} />
-      </Routes>
-    </BrowserRouter>
+    <LogProvider>
+      <BrowserRouter>
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Products />} />
+          <Route path="/usuario" element={<LoginRegister />} />
+          <Route path="/new-product" element={<NewProduct />} />
+          <Route path="/products" element={<Products />} />
+        </Routes>
+      </BrowserRouter>
+    </LogProvider>
   );
 }
 

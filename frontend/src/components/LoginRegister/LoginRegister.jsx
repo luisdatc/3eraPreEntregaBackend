@@ -1,6 +1,7 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import "./LoginRegister.scss";
 import { useNavigate } from "react-router-dom";
+import { LogContext } from "../LogContext";
 
 const LoginRegister = () => {
   const [isLoginFormVisible, setLoginFormVisible] = useState(true);
@@ -10,7 +11,7 @@ const LoginRegister = () => {
     setLoginFormVisible(!isLoginFormVisible);
   };
   const navigate = useNavigate();
-
+  const { setIsLogeado } = useContext(LogContext);
   const loginFormRef = useRef(null);
   const registerFormRef = useRef(null);
 
@@ -39,6 +40,7 @@ const LoginRegister = () => {
       document.cookie = `jwtCookie=${datos.token}; expires=${new Date(
         Date.now() + 1 * 24 * 60 * 60 * 1000
       ).toUTCString()};path=/;`;
+      setIsLogeado(true);
       navigate("/products");
     } else {
       console.log(response);
@@ -70,7 +72,7 @@ const LoginRegister = () => {
         body: JSON.stringify(data),
       }
     );
-    
+
     console.log(response);
   };
 

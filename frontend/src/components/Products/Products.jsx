@@ -19,6 +19,7 @@ const Products = () => {
           <ProductCard key={producto._id} {...producto} />
         ))}
       </Row>
+      
     </div>
   );
 };
